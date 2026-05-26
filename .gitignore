@@ -1,0 +1,8 @@
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.env
+kubeconfig
+.DS_Store
+asset_processor.zip
