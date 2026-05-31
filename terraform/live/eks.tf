@@ -40,8 +40,10 @@ module "eks" {
     bedrock_nodes = {
       name = "bedrock-nodes"
 
-      ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t3.medium"]
+      ami_type                       = "AL2023_x86_64_STANDARD"
+      use_latest_ami_release_version = false
+      ami_release_version            = "1.34.8-20260520"
+      instance_types                 = ["t3.medium"]
 
       min_size     = 2
       max_size     = 3
