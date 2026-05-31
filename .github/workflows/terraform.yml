@@ -1,4 +1,5 @@
 name: Terraform CI/CD
+run-name: ${{ github.event_name == 'pull_request' && 'Terraform Plan' || 'Terraform Apply' }}
 
 on:
   pull_request:
