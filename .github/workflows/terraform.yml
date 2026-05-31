@@ -75,18 +75,23 @@ jobs:
             const fs = require("fs");
             const plan = fs.readFileSync("${{ env.TF_WORKING_DIR }}/tfplan.txt", "utf8");
             const maxLength = 60000;
-            const body = `## Terraform Plan Result
+            const displayedPlan = plan.length > maxLength
+              ? plan.substring(0, maxLength) + "\n\n...Plan output truncated..."
+              : plan;
 
-\`\`\`terraform
-${plan.length > maxLength ? plan.substring(0, maxLength) + "\n\n...Plan output truncated..." : plan}
-\`\`\`
-`;
+            const body = [
+              "## Terraform Plan Result",
+              "",
+              "```terraform",
+              displayedPlan,
+              "```"
+            ].join("\n");
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body
+              body: body
             });
 
   terraform-apply:
