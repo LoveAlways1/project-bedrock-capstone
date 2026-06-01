@@ -45,10 +45,14 @@ The solution includes:
 
 ## Retail Store Application URL
 
-The Retail Store application is available through the ALB Ingress:
+The Retail Store application is available through HTTPS using the custom domain:
 
 ```text
-http://k8s-retailap-ui-6039ab69e6-1702191236.us-east-1.elb.amazonaws.com
+https://store.chnd.space
+HTTP requests to the application redirect to HTTPS:
+
+```text
+http://store.chnd.space -> https://store.chnd.space
 ```
 
 ## Terraform Deployment Guide
@@ -252,6 +256,71 @@ bedrock-cicd-deploy
 ```
 
 No AWS credentials are hardcoded in the workflow file.
+
+## Bonus Objectives
+
+### 5.1 Helm-Based Deployment
+
+Status: Completed
+
+The Retail Store application is deployed using the upstream AWS Retail Store Sample App Helm chart committed into this repository.
+
+Helm chart location:
+
+```text
+helm/retail-store/src/app/chart
+```
+
+Custom project values file:
+
+```text
+helm/retail-store/values-project-bedrock.yaml
+```
+
+The chart is deployable with one Helm command:
+
+```bash
+helm upgrade --install retail-store helm/retail-store/src/app/chart \
+  --namespace retail-app \
+  -f helm/retail-store/values-project-bedrock.yaml \
+  --wait \
+  --timeout 10m
+```
+
+The custom values file overrides the data layer to use:
+
+```text
+Catalog  -> Amazon RDS MySQL
+Orders   -> Amazon RDS PostgreSQL
+Carts    -> Amazon DynamoDB
+```
+
+### 5.2 Advanced Networking and TLS
+
+Status: Completed
+
+The application is exposed publicly through an AWS Application Load Balancer using the custom domain:
+
+```text
+https://store.chnd.space
+```
+
+An AWS Certificate Manager certificate was issued for:
+
+```text
+store.chnd.space
+```
+
+The ACM certificate is attached to the ALB through AWS Load Balancer Controller Ingress annotations.
+
+HTTP traffic on port 80 redirects to HTTPS on port 443.
+
+Verification:
+
+```text
+https://store.chnd.space -> HTTP/1.1 200 OK
+http://store.chnd.space  -> 301 Moved Permanently -> https://store.chnd.space
+```
 
 ## Observability
 
