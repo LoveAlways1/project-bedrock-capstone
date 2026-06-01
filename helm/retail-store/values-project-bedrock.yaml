@@ -104,6 +104,9 @@ ui:
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:940567657040:certificate/ac4fbc1a-423e-441c-a209-7311102514fd
+      alb.ingress.kubernetes.io/ssl-redirect: '443'
       alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
-    hosts: []
+    hosts:
+      - store.chnd.space
